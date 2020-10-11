@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "jsforce": "^1.10.0",
+    "moment": "^2.29.1",
     "realm-web": "^1.0.0-rc.1"
   }
 }
