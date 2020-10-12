@@ -58,8 +58,8 @@ oauth2.authenticate("psintegration@mongodb.com.stage","cFt67sp11mCiHSxdO3oGYUpxk
 			  try {
 				  console.log("total : " + result.totalSize);
 				  console.log("fetched : " + result.records.length);
-				  // console.log(result.records)
-				  // console.log(tr.projects_transform(result.records))
+				  //console.log(result.records)
+				  //console.log(tr.projects_transform(result.records))
 				  if (result.records.length > 0) {
 					  let docs = tr.projects_transform(result.records)
 					  user.functions.loadProjects(docs).then(res => {
