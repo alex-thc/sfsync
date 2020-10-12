@@ -66,7 +66,7 @@ function get_value_flat(doc, key) {
 }
 
 function parseAsNeeded(val) {
-	if (!val) return null;
+	if ( val === undefined || val === null) return null;
 
 	var date = moment.utc(val,"YYYY-MM-DD",true);
 	if (date.isValid())
