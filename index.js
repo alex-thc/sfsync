@@ -37,7 +37,19 @@ oauth2.authenticate("psintegration@mongodb.com.stage","cFt67sp11mCiHSxdO3oGYUpxk
   	  console.log("Successfully logged in to Realm!")
 
   	  //projects
-  	  user.functions.getTimestamp("psproject").then(ts => {
+  	  loadProjects(user,conn)
+
+		  //user.mongoClient("mongodb-atlas").db("shf").collection("psproject").deleteMany({});
+  }).catch((error) => {
+	console.error("Failed to log into Realm", error);
+  });
+
+}).catch((error) => {
+  console.error("Failed to log into Salesforce", error);
+});
+
+function loadProjects(user,conn) {
+	user.functions.getTimestamp("psproject").then(ts => {
   	  	  console.log("Project timestamp:",ts)
   	  	  var cond_where;
   	  	  if (ts) {
@@ -72,16 +84,7 @@ oauth2.authenticate("psintegration@mongodb.com.stage","cFt67sp11mCiHSxdO3oGYUpxk
 					console.log(err)
 				}
 		  });
-
-		  //user.mongoClient("mongodb-atlas").db("shf").collection("psproject").deleteMany({});
-
 	  }).catch((error) => {
 		  console.error("Failed to get timestamp", error);
 	  });
-  }).catch((error) => {
-	console.error("Failed to log into Realm", error);
-  });
-
-}).catch((error) => {
-  console.error("Failed to log into Salesforce", error);
-});
+}
