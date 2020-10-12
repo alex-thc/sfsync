@@ -1,29 +1,4 @@
-const sf2mongo_project_field_map = {
-	"Id" : "_id",
-	"Name" : "name",
-	"pse__Account__r.Name" : "account",
-	"pse__Region__r.Name" : "region",
-	"pse__Is_Active__c" : "active",
-	"pse__Stage__c" : "stage",
-	"Project_Owner__r.Name" : "owner",
-	//opportunity
-	"pse__Opportunity__r.Name" : "opportunity.name",
-	"pse__Opportunity__r.Owner.Name" : "opportunity.owner",
-	"pse__Opportunity__r.Eng_Manager__r.Name" : "opportunity.engagement_manager",
-	//summary
-	"pse__Planned_Hours__c" : "summary.planned_hours",
-	"Gap_Hours__c" : "summary.gap_hours",
-	"Backlog_Hours__c" : "summary.backlog_hours",
-	//details
-	"PM_Project_Status__c" : "details.pm_project_status",
-	"pse__Project_Status_Notes__c" : "details.project_status_notes",
-	"PM_Stage__c" : "details.pm_stage",
-	"Next_Projected_Delivery_Date__c" : "details.next_projected_delivery_date",
-	"Active_CSM__c" : "details.active_csm",
-	"Remaining_Hours_Will_Expire__c" : "details.remaining_hours_will_expire",
-	"pse__End_Date__c" : "details.product_end_date",
-	"SystemModstamp" : "SystemModstamp"
-}
+const moment = require('moment');
 
 const mongo2sf_project_map = {
 	"_id": "Id",
@@ -74,24 +49,61 @@ function getSFFieldsString_project() {
 	return fields.join(",");
 }
 
+function get_value_flat(doc, key) {
+	if (key.indexOf(".") < 0) //regular field
+		return doc[key]
+	else { //nested
+		let hr = key.split(".")
+		let val = doc
+		try {
+			for (var l in hr) val = val[ hr[l] ];
+			return val
+		} catch(err) {
+			//we'll do nothing here because the odds are the related object was empty
+			return null
+		}
+	}
+}
+
+function parseAsNeeded(val) {
+	if (!val) return null;
+
+	var date = moment.utc(val,"YYYY-MM-DD",true);
+	if (date.isValid())
+		return date.toDate();
+	else
+		//return val
+	{
+		date = moment.utc(val,"YYYY-MM-DDTHH:mm:ss.SSSZZ",true);
+		if (date.isValid())
+			return date.toDate();
+		else
+			return val;
+	}
+	// var date = new Date(val)
+	// if (isNaN(date))
+	// 	return val;
+	// else
+	// 	return date;
+}
+
 function projects_transform(sf_docs) {
 	var mongo_docs = []
 	for (var i in sf_docs) {
 		var doc = {}
-		for (const [sf_key, mongo_key] of Object.entries(sf2mongo_project_field_map)) {
-  			if (sf_key.indexOf(".") < 0) //regular field
-  				doc[mongo_key] = sf_docs[i][sf_key]
-  			else { //nested
-  				let hr = sf_key.split(".")
-  				let val = sf_docs[i]
-  				try {
-  					for (var l in hr) val = val[ hr[l] ];
-  					doc[mongo_key] = val
-  				} catch(err) {
-  					//we'll do nothing here because the odds are thee related object was empty
-  				}
-  			}
+
+		const iterate = (obj,target) => {
+		    Object.keys(obj).forEach(key => {
+
+			    if (typeof obj[key] === 'object') {
+		    		target[key] = {}
+		            iterate(obj[key],target[key])
+			    } else 
+			        target[key] = parseAsNeeded(get_value_flat(sf_docs[i], obj[key]))
+		    }) 
 		}
+		iterate(mongo2sf_project_map, doc)
+
 		mongo_docs.push(doc)
 	}
 	return mongo_docs
