@@ -53,19 +53,27 @@ oauth2.authenticate("psintegration@mongodb.com.stage","cFt67sp11mCiHSxdO3oGYUpxk
   	  	  	cond_where = `pse__End_Date__c >= ${date}`
   	  	  }
 
-		  conn.query(`SELECT Id, Name, SystemModStamp, pse__Is_Active__c, pse__Stage__c, pse__End_Date__c FROM pse__Proj__c WHERE ${cond_where}`, function(err, result) {
+		  conn.query(`SELECT ${tr.getSFFieldsString_project()} FROM pse__Proj__c WHERE ${cond_where} LIMIT 2`, function(err, result) {
 			  if (err) { return console.error(err); }
-			  console.log("total : " + result.totalSize);
-			  console.log("fetched : " + result.records.length);
-			  if (result.records.length > 0) {
-				  let docs = tr.projects_transform(result.records)
-				  user.functions.loadProjects(docs).then(res => {
-				  	  console.log(res)
-				  }).catch((error) => {
-					  console.error("Failed to load projects into Realm", error);
-				  });
-			  }
+			  try {
+				  console.log("total : " + result.totalSize);
+				  console.log("fetched : " + result.records.length);
+				  console.log(result.records)
+				  console.log(tr.projects_transform(result.records))
+			  // if (result.records.length > 0) {
+				 //  let docs = tr.projects_transform(result.records)
+				 //  user.functions.loadProjects(docs).then(res => {
+				 //  	  console.log(res)
+				 //  }).catch((error) => {
+					//   console.error("Failed to load projects into Realm", error);
+				 //  });
+			  // }
+				} catch(err) {
+					console.log(err)
+				}
 		  });
+
+		  //user.mongoClient("mongodb-atlas").db("shf").collection("psproject").deleteMany({});
 
 	  }).catch((error) => {
 		  console.error("Failed to get timestamp", error);
