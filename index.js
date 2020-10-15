@@ -4,6 +4,8 @@ const Realm = require('realm-web');
 var assert = require('assert');
 const moment = require('moment');
 
+//TODO: need to trigger the full resync daily to deal with joined fields we don't track
+
 const realmApp = new Realm.App({ id: "shadowforce-sivxs" });
 const realmApiKey = "PDmuuqHPGyRF3eMVWsqle43rcDAaohEdwJIhFWtHivqJ86b3g4crnP8oienz7J7h"
 
@@ -37,9 +39,12 @@ oauth2.authenticate("psintegration@mongodb.com.stage","cFt67sp11mCiHSxdO3oGYUpxk
   	  console.log("Successfully logged in to Realm!")
 
   	  //projects
-  	  loadProjects(user,conn)
+  	  //loadProjects(user,conn)
 
-		  //user.mongoClient("mongodb-atlas").db("shf").collection("psproject").deleteMany({});
+  	  //milestones
+  	  loadMilestones(user,conn)
+
+	  //user.mongoClient("mongodb-atlas").db("shf").collection("psproject").deleteMany({});
   }).catch((error) => {
 	console.error("Failed to log into Realm", error);
   });
@@ -78,6 +83,47 @@ function loadProjects(user,conn) {
 					  	  console.log(res)
 					  }).catch((error) => {
 						  console.error("Failed to load projects into Realm", error);
+					  });
+				  }
+				} catch(err) {
+					console.log(err)
+				}
+		  });
+	  }).catch((error) => {
+		  console.error("Failed to get timestamp", error);
+	  });
+}
+
+function loadMilestones(user,conn) {
+	user.functions.getMilestoneTimestamp().then(ts => {
+  	  	  console.log("Milestone timestamp:",ts)
+  	  	  var cond_where;
+  	  	  if (ts) {
+  	  	  	let date = moment(ts).toISOString();
+  	  	  	cond_where = `SystemModstamp > ${date}`
+  	  	  } else {
+  	  	  	//we need to get anything that expires in this quarter or later
+  	  	  	//for simplicity, we'll just look 3 months back
+  	  	  	let date = moment().subtract(3, 'months').format('YYYY-MM-DD');
+  	  	  	//console.log(date)
+  	  	  	//return
+  	  	  	//cond_where = "pse__Stage__c IN ('In Progress','At Risk') OR (pse__Stage__c = 'Expired' AND )"
+  	  	  	cond_where = `pse__Project__r.pse__End_Date__c >= ${date}`
+  	  	  }
+
+		  conn.query(`SELECT ${tr.getSFFieldsString_milestone()} FROM pse__Milestone__c WHERE ${cond_where}`, function(err, result) {
+			  if (err) { return console.error(err); }
+			  try {
+				  console.log("total : " + result.totalSize);
+				  console.log("fetched : " + result.records.length);
+				  //console.log(result.records)
+				  //console.log(tr.milestones_transform(result.records))
+				  if (result.records.length > 0) {
+					  let docs = tr.milestones_transform(result.records)
+					  user.functions.loadMilestones(docs).then(res => {
+					  	  console.log(res)
+					  }).catch((error) => {
+						  console.error("Failed to load milestones into Realm", error);
 					  });
 				  }
 				} catch(err) {

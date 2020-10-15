@@ -33,9 +33,32 @@ const mongo2sf_project_map = {
 	"SystemModstamp" : "SystemModstamp"
 }
 
-function getSFFieldsString_project() {
-	//return Object.getOwnPropertyNames(sf2mongo_project_field_map).join(",");
-	var fields = []
+const mongo2sf_milestone_map = {
+	"_id" : "Id",
+	"projectId" : "pse__Project__r.Id",
+	"name" : "Name",
+	"country" : "Country__c",
+	"currency" : "CurrencyIsoCode",
+	"summary" : {
+		"planned_hours" : "pse__Planned_Hours__c",
+		"sold_hours" : "Sold_Hours__c",
+		"delivered_hours" : "Delivered_Hours__c",
+		"gap_hours" : "Gap_Hours__c",
+		"unscheduled_hours" : "Scheduled_Gap_Hours__c",
+		"hours_for_ns" : "Delivered_Hours_for_NS__c",
+	},
+	"details" : {
+		"first_scheduled_date" : "First_Scheduled_Date__c",
+		"last_scheduled_date" : "Last_Scheduled_Date__c",
+		"bill_rate" : "Bill_Rate__c",
+		"milestone_amount" : "pse__Milestone_Amount__c",
+		"delivered_amount" : "Delivered_Amount__c",
+	},
+	"SystemModstamp" : "SystemModstamp"
+}
+
+function getSFFieldsString(conv_map) {
+   	var fields = []
 	const iterate = (obj) => {
 	    Object.keys(obj).forEach(key => {
 
@@ -44,9 +67,19 @@ function getSFFieldsString_project() {
 	        } else fields.push(obj[key])
 	    }) 
 	}
-	iterate(mongo2sf_project_map)
+	iterate(conv_map)
 
 	return fields.join(",");
+}
+
+function getSFFieldsString_project() {
+	//return Object.getOwnPropertyNames(sf2mongo_project_field_map).join(",");
+	return getSFFieldsString(mongo2sf_project_map)
+}
+
+function getSFFieldsString_milestone() {
+	//return Object.getOwnPropertyNames(sf2mongo_project_field_map).join(",");
+	return getSFFieldsString(mongo2sf_milestone_map)
 }
 
 function get_value_flat(doc, key) {
@@ -87,7 +120,7 @@ function parseAsNeeded(val) {
 	// 	return date;
 }
 
-function projects_transform(sf_docs) {
+function transform(sf_docs, conv_map) {
 	var mongo_docs = []
 	for (var i in sf_docs) {
 		var doc = {}
@@ -102,11 +135,22 @@ function projects_transform(sf_docs) {
 			        target[key] = parseAsNeeded(get_value_flat(sf_docs[i], obj[key]))
 		    }) 
 		}
-		iterate(mongo2sf_project_map, doc)
+		iterate(conv_map, doc)
 
 		mongo_docs.push(doc)
 	}
 	return mongo_docs
 }
 
-module.exports = { projects_transform, getSFFieldsString_project }
+function projects_transform(sf_docs) {
+	return transform(sf_docs, mongo2sf_project_map)
+}
+
+function milestones_transform(sf_docs) {
+	return transform(sf_docs, mongo2sf_milestone_map)
+}
+
+module.exports = { 
+	projects_transform, getSFFieldsString_project,
+	milestones_transform, getSFFieldsString_milestone
+}
