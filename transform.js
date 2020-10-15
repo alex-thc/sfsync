@@ -57,6 +57,27 @@ const mongo2sf_milestone_map = {
 	"SystemModstamp" : "SystemModstamp"
 }
 
+const mongo2sf_schedule_map = {
+	"_id" : "Id",
+	"projectId" : "pse__Assignment__r.pse__Project__r.Id",
+	"milestoneId" : "pse__Assignment__r.pse__Milestone__r.Id",
+	"name" : "Name",
+	"isDeleted" : "IsDeleted",
+	"week" : "pse__Start_Date__c",
+	"resource" : "pse__Resource__r.Name",
+	"estimated" : {
+		"hours" : "pse__Estimated_Hours__c",
+		"days" : "pse__Estimated_Days__c",
+		"revenue" : "Scheduled_Billings_USD__c"
+	},
+	"actual" : {
+		"hours" : "pse__Actual_Hours__c",
+		"days" : "pse__Actual_Days__c",
+		"revenue" : "pse__Actual_Billable_Amount__c"
+	},
+	"SystemModstamp" : "SystemModstamp"
+}
+
 function getSFFieldsString(conv_map) {
    	var fields = []
 	const iterate = (obj) => {
@@ -80,6 +101,10 @@ function getSFFieldsString_project() {
 function getSFFieldsString_milestone() {
 	//return Object.getOwnPropertyNames(sf2mongo_project_field_map).join(",");
 	return getSFFieldsString(mongo2sf_milestone_map)
+}
+
+function getSFFieldsString_schedule() {
+	return getSFFieldsString(mongo2sf_schedule_map)
 }
 
 function get_value_flat(doc, key) {
@@ -150,7 +175,12 @@ function milestones_transform(sf_docs) {
 	return transform(sf_docs, mongo2sf_milestone_map)
 }
 
+function schedules_transform(sf_docs) {
+	return transform(sf_docs, mongo2sf_schedule_map)
+}
+
 module.exports = { 
 	projects_transform, getSFFieldsString_project,
-	milestones_transform, getSFFieldsString_milestone
+	milestones_transform, getSFFieldsString_milestone,
+	schedules_transform, getSFFieldsString_schedule
 }
