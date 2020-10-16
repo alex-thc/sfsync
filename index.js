@@ -41,11 +41,11 @@ oauth2.authenticate("psintegration@mongodb.com.stage","cFt67sp11mCiHSxdO3oGYUpxk
 
   	  (async () => {
    		  await loadProjects(user,conn);
-   		  await loadMilestones(user,conn);
-   		  await loadSchedules(user,conn);
+   		  // await loadMilestones(user,conn);
+   		  // await loadSchedules(user,conn);
 	  })()
 
-	  // user.mongoClient("mongodb-atlas").db("shf").collection("psproject").deleteMany({});
+	  user.mongoClient("mongodb-atlas").db("shf").collection("psproject").deleteMany({});
 	  // user.mongoClient("mongodb-atlas").db("shf").collection("schedule").deleteMany({});
   }).catch((error) => {
 	console.error("Failed to log into Realm", error);
@@ -73,12 +73,12 @@ function sfQueryMoreWrapper(conn, locator) {
     });
 }
 
-async function loadProjects(user,conn) {
+async function loadProjects(user,conn,resync=false) {
 	  console.log("Loading projects...");
 	  var ts = await user.functions.getTimestamp("psproject");
 	  console.log("Project timestamp:",ts)
 	  var cond_where;
-	  if (ts) {
+	  if (ts && !resync) {
 	  	let date = moment(ts).toISOString();
 	  	cond_where = `SystemModstamp > ${date}`
 	  } else {
@@ -91,7 +91,7 @@ async function loadProjects(user,conn) {
 	  	cond_where = `pse__End_Date__c >= ${date}`
 	  }
 
-	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_project()} FROM pse__Proj__c WHERE ${cond_where}`);
+	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_project()} FROM pse__Proj__c WHERE ${cond_where} LIMIT 10`);
 	  var done = false;
 	  var fetched = 0;
 	  while(! done) {
@@ -99,7 +99,7 @@ async function loadProjects(user,conn) {
 			fetched = fetched + result.records.length;
 			console.log(`Fetched: ${fetched}/${result.totalSize}`);
 			//console.log(result.records)
-			//console.log(tr.projects_transform(result.records))
+			console.log(tr.projects_transform(result.records))
 			if (result.records.length > 0) {
 			  let docs = tr.projects_transform(result.records)
 			  await user.functions.loadProjects(docs)
@@ -112,12 +112,12 @@ async function loadProjects(user,conn) {
 	console.log("Done.");
 }
 
-async function loadMilestones(user,conn) {
+async function loadMilestones(user,conn,resync=false) {
 	  console.log("Loading milestones...");
 	  var ts = await user.functions.getMilestoneTimestamp();
 	  console.log("Milestone timestamp:",ts)
 	  var cond_where;
-	  if (ts) {
+	  if (ts && !resync && !resync) {
 	  	let date = moment(ts).toISOString();
 	  	cond_where = `SystemModstamp > ${date}`
 	  } else {
@@ -150,12 +150,12 @@ async function loadMilestones(user,conn) {
 	console.log("Done.");
 }
 
-async function loadSchedules(user,conn) {
+async function loadSchedules(user,conn,resync=false) {
 	  console.log("Loading schedules...");
 	  var ts = await user.functions.getTimestamp("schedule");
 	  console.log("Schedule timestamp:",ts)
 	  var cond_where;
-	  if (ts) {
+	  if (ts && !resync) {
 	  	let date = moment(ts).toISOString();
 	  	cond_where = `SystemModstamp > ${date}`
 	  } else {

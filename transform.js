@@ -8,6 +8,8 @@ const mongo2sf_project_map = {
 	"active" : "pse__Is_Active__c",
 	"stage" : "pse__Stage__c",
 	"owner" : "Project_Owner__r.Name",
+	"project_manager" : "pse__Project_Manager__r.Name",
+	"ps_ops_resource" : "PS_Ops_Resource__r.Name",
 
 	"opportunity" : {
 		"name" : "pse__Opportunity__r.Name",
@@ -135,7 +137,7 @@ function parseAsNeeded(val) {
 		date = moment.utc(val,"YYYY-MM-DDTHH:mm:ss.SSSZZ",true);
 		if (date.isValid())
 			return date.toDate();
-		else
+		else 
 			return val;
 	}
 	// var date = new Date(val)
