@@ -41,11 +41,11 @@ oauth2.authenticate("psintegration@mongodb.com.stage","cFt67sp11mCiHSxdO3oGYUpxk
 
   	  (async () => {
    		  await loadProjects(user,conn);
-   		  // await loadMilestones(user,conn);
-   		  // await loadSchedules(user,conn);
+   		  await loadMilestones(user,conn);
+   		  await loadSchedules(user,conn);
 	  })()
 
-	  user.mongoClient("mongodb-atlas").db("shf").collection("psproject").deleteMany({});
+	  // user.mongoClient("mongodb-atlas").db("shf").collection("psproject").deleteMany({});
 	  // user.mongoClient("mongodb-atlas").db("shf").collection("schedule").deleteMany({});
   }).catch((error) => {
 	console.error("Failed to log into Realm", error);
@@ -91,7 +91,7 @@ async function loadProjects(user,conn,resync=false) {
 	  	cond_where = `pse__End_Date__c >= ${date}`
 	  }
 
-	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_project()} FROM pse__Proj__c WHERE ${cond_where} LIMIT 10`);
+	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_project()} FROM pse__Proj__c WHERE ${cond_where}`);
 	  var done = false;
 	  var fetched = 0;
 	  while(! done) {
@@ -99,7 +99,7 @@ async function loadProjects(user,conn,resync=false) {
 			fetched = fetched + result.records.length;
 			console.log(`Fetched: ${fetched}/${result.totalSize}`);
 			//console.log(result.records)
-			console.log(tr.projects_transform(result.records))
+			//console.log(tr.projects_transform(result.records))
 			if (result.records.length > 0) {
 			  let docs = tr.projects_transform(result.records)
 			  await user.functions.loadProjects(docs)

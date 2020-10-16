@@ -138,13 +138,8 @@ function parseAsNeeded(val) {
 		if (date.isValid())
 			return date.toDate();
 		else 
-			return val;
+			return val; //note that this will insert numbers as both int and double
 	}
-	// var date = new Date(val)
-	// if (isNaN(date))
-	// 	return val;
-	// else
-	// 	return date;
 }
 
 function transform(sf_docs, conv_map) {
