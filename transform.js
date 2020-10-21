@@ -75,7 +75,7 @@ const mongo2sf_schedule_map = {
 	"actual" : {
 		"hours" : "pse__Actual_Hours__c",
 		"days" : "pse__Actual_Days__c",
-		"revenue" : "pse__Actual_Billable_Amount__c"
+		"revenue" : "convertCurrency(pse__Actual_Billable_Amount__c)"
 	},
 	"SystemModstamp" : "SystemModstamp"
 }
@@ -110,6 +110,10 @@ function getSFFieldsString_schedule() {
 }
 
 function get_value_flat(doc, key) {
+	//strip the currency conversion function if present
+	if (key.startsWith("convertCurrency("))
+		key = key.slice(16,key.length-1);
+
 	if (key.indexOf(".") < 0) //regular field
 		return doc[key]
 	else { //nested
