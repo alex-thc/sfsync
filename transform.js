@@ -80,6 +80,11 @@ const mongo2sf_schedule_map = {
 	"SystemModstamp" : "SystemModstamp"
 }
 
+function milestone_posttransform(doc) {
+	doc.fromTraining = doc.name.includes("Training");
+	return doc;
+}
+
 function getSFFieldsString(conv_map) {
    	var fields = []
 	const iterate = (obj) => {
@@ -146,7 +151,7 @@ function parseAsNeeded(val) {
 	}
 }
 
-function transform(sf_docs, conv_map) {
+function transform(sf_docs, conv_map, func_posttransform = null) {
 	var mongo_docs = []
 	for (var i in sf_docs) {
 		var doc = {}
@@ -163,6 +168,9 @@ function transform(sf_docs, conv_map) {
 		}
 		iterate(conv_map, doc)
 
+		if (func_posttransform != null)
+			doc = func_posttransform(doc);
+
 		mongo_docs.push(doc)
 	}
 	return mongo_docs
@@ -173,7 +181,7 @@ function projects_transform(sf_docs) {
 }
 
 function milestones_transform(sf_docs) {
-	return transform(sf_docs, mongo2sf_milestone_map)
+	return transform(sf_docs, mongo2sf_milestone_map, milestone_posttransform)
 }
 
 function schedules_transform(sf_docs) {
