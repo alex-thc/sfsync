@@ -87,6 +87,23 @@ function milestone_posttransform(doc) {
 	return doc;
 }
 
+function getStageSortId(stage) {
+	switch(stage) {
+		case "Not Started" : return 0;
+		case "Planning" : return 10;
+		case "In Progress": return 20;
+		case "On Hold": return 30;
+		case "Cancelled": return 40;
+		case "Closed": return 50;
+		default: return 0;
+	}
+}
+
+function project_posttransform(doc) {
+	doc.details.pm_stage_sortid = getStageSortId(doc.details.pm_stage);
+	return doc;
+}
+
 function getSFFieldsString(conv_map) {
    	var fields = []
 	const iterate = (obj) => {
