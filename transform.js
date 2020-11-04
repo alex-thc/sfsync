@@ -196,7 +196,7 @@ function transform(sf_docs, conv_map, func_posttransform = null) {
 }
 
 function projects_transform(sf_docs) {
-	return transform(sf_docs, mongo2sf_project_map)
+	return transform(sf_docs, mongo2sf_project_map, project_posttransform)
 }
 
 function milestones_transform(sf_docs) {
