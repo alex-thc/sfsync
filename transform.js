@@ -66,6 +66,8 @@ const mongo2sf_schedule_map = {
 	"projectId" : "pse__Assignment__r.pse__Project__r.Id",
 	"milestoneId" : "pse__Assignment__r.pse__Milestone__r.Id",
 	"name" : "Name",
+	"billable" : "pse__Assignment__r.pse__Is_Billable__c",
+	"role" : "pse__Assignment__r.pse__Role__c",
 	"isDeleted" : "IsDeleted",
 	"week" : "pse__Start_Date__c",
 	"resource" : "pse__Resource__r.Name",

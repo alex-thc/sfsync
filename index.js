@@ -169,7 +169,7 @@ async function loadSchedules(user,conn,resync=false) {
 	  	cond_where = `pse__Assignment__r.pse__Project__r.pse__End_Date__c >= ${date} AND (pse__Estimated_Hours__c > 0 OR pse__Actual_Hours__c > 0)`
 	  }
 
-	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_schedule()} FROM pse__Est_Vs_Actuals__c WHERE ${cond_where} AND pse__Assignment__r.pse__Is_Billable__c = TRUE`);
+	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_schedule()} FROM pse__Est_Vs_Actuals__c WHERE ${cond_where}`);
 	  var done = false;
 	  var fetched = 0;
 	  while(! done) {
