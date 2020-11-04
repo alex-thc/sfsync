@@ -4,6 +4,7 @@ const mongo2sf_project_map = {
 	"_id": "Id",
 	"name" : "Name",
     "account": "pse__Account__r.Name",
+    "account_id": "pse__Account__r.Id",
 	"region" : "pse__Region__r.Name",
 	"active" : "pse__Is_Active__c",
 	"stage" : "pse__Stage__c",
@@ -15,6 +16,7 @@ const mongo2sf_project_map = {
 		"name" : "pse__Opportunity__r.Name",
 		"owner" : "pse__Opportunity__r.Owner.Name",
 		"engagement_manager" : "pse__Opportunity__r.Eng_Manager__r.Name",
+		"_id" : "pse__Opportunity__r.Id"
 	},
 	
 	"summary" : {

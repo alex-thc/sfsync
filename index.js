@@ -3,7 +3,7 @@ const tr = require('./transform');
 const Realm = require('realm-web');
 var assert = require('assert');
 const moment = require('moment');
-var CONFIG = require('./config-sandbox.json');
+var CONFIG = require('./config-prod.json');
 
 //TODO: need to trigger the full resync daily (for projects) to deal with joined fields we don't track
 //or do a selective query somehow
