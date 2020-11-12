@@ -54,9 +54,9 @@ const mongo2sf_milestone_map = {
 	"details" : {
 		"first_scheduled_date" : "First_Scheduled_Date__c",
 		"last_scheduled_date" : "Last_Scheduled_Date__c",
-		"bill_rate" : "Bill_Rate__c",
-		"milestone_amount" : "pse__Milestone_Amount__c",
-		"delivered_amount" : "Delivered_Amount__c",
+		"bill_rate" : "convertCurrency(Bill_Rate__c)",
+		"milestone_amount" : "convertCurrency(pse__Milestone_Amount__c)",
+		"delivered_amount" : "convertCurrency(Delivered_Amount__c)",
 	},
 	"SystemModstamp" : "SystemModstamp"
 }
