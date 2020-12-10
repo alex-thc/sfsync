@@ -81,6 +81,10 @@ const mongo2sf_schedule_map = {
 		"days" : "pse__Actual_Days__c",
 		"revenue" : "convertCurrency(pse__Actual_Billable_Amount__c)"
 	},
+	"assignment" : {
+		"start_date" : "pse__Assignment__r.pse__Start_Date__c",
+		"end_date" : "pse__Assignment__r.pse__End_Date__c",
+	},
 	"SystemModstamp" : "SystemModstamp"
 }
 
