@@ -191,7 +191,7 @@ async function syncSchedules(user,conn) {
 
 		}
 
-	  console.log(`Deleting ${Object.keys(ids_map)} keys`)
+	  console.log(`Deleting ${Object.keys(ids_map).length} keys`)
 	  dbCol.deleteMany({_id:{$in: Object.keys(ids_map) }})
 
 	 
