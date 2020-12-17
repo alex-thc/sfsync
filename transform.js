@@ -11,6 +11,7 @@ const mongo2sf_project_map = {
 	"owner" : "Project_Owner__r.Name",
 	"project_manager" : "pse__Project_Manager__r.Name",
 	"ps_ops_resource" : "PS_Ops_Resource__r.Name",
+	"type" : "pse__Project_Type__c",
 
 	"opportunity" : {
 		"name" : "pse__Opportunity__r.Name",
