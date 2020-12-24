@@ -43,7 +43,7 @@ oauth2.authenticate(CONFIG.sfUser,CONFIG.sfPasswordWithKey).then((tokenResponse)
    		  await loader.loadProjects(user,conn);
    		  await loader.loadMilestones(user,conn);
    		  await loader.loadSchedules(user,conn);
-   		  await loader.loadOpportunities(user,conn,true);
+   		  await loader.loadOpportunities(user,conn);
    		  await loader.syncSchedules(user,conn);
 	  })()
 
