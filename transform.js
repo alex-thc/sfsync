@@ -122,7 +122,7 @@ const mongo2sf_opportunity_map = {
     "sales_forecast" : {
     	"AE" : "In_Forecast_AE__c",
     	"RD" : "In_Forecast_RD__c",
-    	"amount_RD" : "In_Forecast_Amount_Services_RD__c"
+    	"amount_services_RD" : "In_Forecast_Amount_Services_RD__c"
     },
 
     "ps_notes" : "PS_Notes__c",
