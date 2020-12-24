@@ -98,7 +98,7 @@ const mongo2sf_opportunity_map = {
 	"type" : "Type",
 	"owner" : "Owner.Name",
     "stage" : "StageName",
-    "forecast_category" : "ForecastCategory",
+    "forecast_category" : "ForecastCategoryName",
     "close_date" : "CloseDate",
     "amount" : "convertCurrency(Amount)",
     "account": {
