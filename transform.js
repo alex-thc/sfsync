@@ -90,6 +90,60 @@ const mongo2sf_schedule_map = {
 	"SystemModstamp" : "SystemModstamp"
 }
 
+const mongo2sf_opportunity_map = {
+	"_id": "Id",
+	"name" : "Name",
+	"owner_region" : "Owner_Region__c",
+//	"owner_region2" : "Owner.Region__c",
+	"type" : "Type",
+	"owner" : "Owner.Name",
+    "stage" : "StageName",
+    "forecast_category" : "ForecastCategory",
+    "close_date" : "CloseDate",
+    "amount" : "convertCurrency(Amount)",
+    "account": {
+    	"name": "Account.Name",
+    	"_id": "Account.Id",
+    	"owner" : "Account.Owner.Name",
+    	"owner_region" : "Account.Owner.Region__c"
+    },
+    
+    "em" : {
+    	"engagement_manager" : "Eng_Manager__r.Name",
+    	"ps_status" : "PS_Status__c",
+    	"esd_created" : "ESD_Created__c",
+    	"call" : "Engagement_Manager_Call__c",
+    	"call_amount" : "Value__c"
+    },
+
+    "services_post_carve" : "convertCurrency(Services_post_carve__c)",
+    "has_services" : "Has_Services_Products__c",
+
+    "sales_forecast" : {
+    	"AE" : "In_Forecast_AE__c",
+    	"RD" : "In_Forecast_RD__c",
+    	"amount_RD" : "In_Forecast_Amount_Services_RD__c"
+    },
+
+    "ps_notes" : "PS_Notes__c",
+    "ps_region" : "pse__Region__r.Name",
+
+	"SystemModstamp" : "SystemModstamp"
+}
+
+function getSpecialTagValue(ps_notes, tag) {
+	if (!ps_notes) return null;
+	return (ps_notes.indexOf(`${tag}="Yes"`) >= 0) ? "Yes" : (ps_notes.indexOf(`${tag}="Maybe"`) >= 0) ? "Maybe" : (ps_notes.indexOf(`${tag}="No"`) >= 0) ? "No" : null;
+}
+
+function opportunity_posttransform(doc) {
+	var ps_needed = getSpecialTagValue(doc.ps_notes, "%PS_NEEDED%");
+	var em_needed = getSpecialTagValue(doc.ps_notes, "%EM_NEEDED%");
+	if (ps_needed || em_needed)
+		doc.ps_triage = {ps_needed, em_needed};
+	return doc;
+}
+
 function milestone_posttransform(doc) {
 	doc.fromTraining = doc.name.includes("Training");
 	return doc;
@@ -139,6 +193,10 @@ function getSFFieldsString_milestone() {
 
 function getSFFieldsString_schedule() {
 	return getSFFieldsString(mongo2sf_schedule_map)
+}
+
+function getSFFieldsString_opportunity() {
+	return getSFFieldsString(mongo2sf_opportunity_map)
 }
 
 function get_value_flat(doc, key) {
@@ -215,8 +273,13 @@ function schedules_transform(sf_docs) {
 	return transform(sf_docs, mongo2sf_schedule_map)
 }
 
+function opportunities_transform(sf_docs) {
+	return transform(sf_docs, mongo2sf_opportunity_map, opportunity_posttransform)
+}
+
 module.exports = { 
 	projects_transform, getSFFieldsString_project,
 	milestones_transform, getSFFieldsString_milestone,
-	schedules_transform, getSFFieldsString_schedule
+	schedules_transform, getSFFieldsString_schedule, 
+	opportunities_transform, getSFFieldsString_opportunity
 }

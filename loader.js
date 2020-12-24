@@ -198,6 +198,44 @@ async function syncSchedules(user,conn) {
 	console.log("Done.");
 }
 
+async function loadOpportunities(user,conn,resync=false) {
+	  console.log("Loading opportunities...");
+	  var ts = await user.functions.getTimestamp("opportunity");
+	  console.log("Opportunity timestamp:",ts)
+	  var cond_where;
+	  if (ts && !resync) {
+	  	let date = moment(ts).toISOString();
+	  	cond_where = `SystemModstamp > ${date}`
+	  } else {
+	  	//we need to get anything with close date from 1 months ago (just in case)
+	  	let date = moment().subtract(1, 'months').format('YYYY-MM-DD');
+	  	//console.log(date)
+	  	cond_where = `CloseDate >= ${date} AND Account.Geo_Region__c = 'Americas' AND Type != 'Booking (Elastic) Run Rate'`
+	  }
+
+	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_opportunity()} FROM Opportunity WHERE ${cond_where}`);
+	  // console.log(`Total records: ${result.totalSize}`);
+	  // return;
+	  var done = false;
+	  var fetched = 0;
+	  while(! done) {
+	  		done = result.done;
+			fetched = fetched + result.records.length;
+			console.log(`Fetched: ${fetched}/${result.totalSize}`);
+			// console.log(result.records)
+			// console.log(tr.opportunities_transform(result.records))
+			if (result.records.length > 0) {
+			  let docs = tr.opportunities_transform(result.records)
+			  await user.functions.loadDocuments("opportunity",docs)
+			}
+
+	  		if (! result.done) {
+	  		      result = await sfQueryMoreWrapper(conn, result.nextRecordsUrl);
+	  		}
+	}
+	console.log("Done.");
+}
+
 module.exports = { 
-	loadProjects, loadSchedules, loadMilestones, syncSchedules
+	loadProjects, loadSchedules, loadMilestones, syncSchedules, loadOpportunities
 	}
