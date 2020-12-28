@@ -104,6 +104,7 @@ const mongo2sf_opportunity_map = {
     "account": {
     	"name": "Account.Name",
     	"_id": "Account.Id",
+    	"geo_region": "Account.Geo_Region__c",
     	"owner" : "Account.Owner.Name",
     	"owner_region" : "Account.Owner.Region__c"
     },
