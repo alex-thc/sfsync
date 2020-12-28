@@ -210,10 +210,12 @@ async function loadOpportunities(user,conn,resync=false) {
 	  	//we need to get anything with close date from 1 months ago (just in case)
 	  	let date = moment().subtract(1, 'months').format('YYYY-MM-DD');
 	  	//console.log(date)
-	  	cond_where = `CloseDate >= ${date} AND Account.Geo_Region__c = 'Americas' AND Type != 'Booking (Elastic) Run Rate'`
+	  	cond_where = `CloseDate >= ${date}`
 	  }
 
-	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_opportunity()} FROM Opportunity WHERE ${cond_where}`);
+	  var filter = "Account.Geo_Region__c = 'Americas' AND Type != 'Booking (Elastic) Run Rate'";
+
+	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_opportunity()} FROM Opportunity WHERE ${cond_where} AND ${filter}`);
 	  // console.log(`Total records: ${result.totalSize}`);
 	  // return;
 	  var done = false;
