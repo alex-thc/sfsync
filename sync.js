@@ -28,29 +28,29 @@ async function getLatestFailedRequest(dbCollection) {
 // }
 
 async function syncSFChanges(oauth2, sfUser, sfPasswordWithKey, realmUser, dbCollection, request) {
-	// var tokenResponse = await oauth2.authenticate(sfUser,sfPasswordWithKey);
-	// console.log("Successfully logged in to Salesforce!");
-	// console.log(tokenResponse);
+	var tokenResponse = await oauth2.authenticate(sfUser,sfPasswordWithKey);
+	console.log("Successfully logged in to Salesforce!");
+	console.log(tokenResponse);
 
-	// var conn = new jsforce.Connection({
-	// 	instanceUrl : tokenResponse.instance_url,
-	// 	accessToken : tokenResponse.access_token
-	// });
+	var conn = new jsforce.Connection({
+		instanceUrl : tokenResponse.instance_url,
+		accessToken : tokenResponse.access_token
+	});
 
-	// await loader.loadProjects(realmUser,conn);
-	// updateRequest(dbCollection,request,{"ts.projects":new Date()});
+	await loader.loadProjects(realmUser,conn);
+	updateRequest(dbCollection,request,{"ts.projects":new Date()});
 
-	// await loader.loadMilestones(realmUser,conn);
-	// updateRequest(dbCollection,request,{"ts.milestones":new Date()});
+	await loader.loadMilestones(realmUser,conn);
+	updateRequest(dbCollection,request,{"ts.milestones":new Date()});
 
-	// await loader.loadSchedules(realmUser,conn);
-	// updateRequest(dbCollection,request,{"ts.schedules":new Date()});
+	await loader.loadSchedules(realmUser,conn);
+	updateRequest(dbCollection,request,{"ts.schedules":new Date()});
 
-	// await loader.loadOpportunities(realmUser,conn);
-	// updateRequest(dbCollection,request,{"ts.opportunities":new Date()});
+	await loader.loadOpportunities(realmUser,conn);
+	updateRequest(dbCollection,request,{"ts.opportunities":new Date()});
 
-	// await loader.syncSchedules(realmUser,conn);
-	// updateRequest(dbCollection,request,{"ts.schedules_sync":new Date()});
+	await loader.syncSchedules(realmUser,conn);
+	updateRequest(dbCollection,request,{"ts.schedules_sync":new Date()});
 }
 
 module.exports = { 
