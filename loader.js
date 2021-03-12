@@ -159,7 +159,7 @@ async function syncSchedules(user,conn) {
 	  var ids = [];
 	  var ids_map = {};
 	  for(let i in res) {
-	  	ids_map[res[i]._id] = 1;
+	  	ids_map[res[i]._id.id] = 1;
 	  }
 
 	  ids = Object.keys(ids_map);
@@ -192,7 +192,7 @@ async function syncSchedules(user,conn) {
 		}
 
 	  console.log(`Deleting ${Object.keys(ids_map).length} keys`)
-	  dbCol.deleteMany({_id:{$in: Object.keys(ids_map) }})
+	  dbCol.deleteMany({'_id.id':{$in: Object.keys(ids_map) }})
 
 	 
 	console.log("Done.");

@@ -65,7 +65,10 @@ const mongo2sf_milestone_map = {
 }
 
 const mongo2sf_schedule_map = {
-	"_id" : "Id",
+	"_id" : {
+		"id" : "Id",
+		"ms_id" : "pse__Assignment__r.pse__Milestone__r.Id"
+	},
 	"projectId" : "pse__Assignment__r.pse__Project__r.Id",
 	"milestoneId" : "pse__Assignment__r.pse__Milestone__r.Id",
 	"name" : "Name",
