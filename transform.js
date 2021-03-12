@@ -53,6 +53,7 @@ const mongo2sf_milestone_map = {
 		"hours_for_ns" : "Delivered_Hours_for_NS__c",
 		"billable_hours_submitted" : "pse__Billable_Hours_Submitted__c",
 		"non_billable_hours_submitted" : "pse__Non_Billable_Hours_Submitted__c",
+		"billable_hours_in_financials" : "pse__Billable_Hours_In_Financials__c",
 	},
 	"details" : {
 		"first_scheduled_date" : "First_Scheduled_Date__c",
