@@ -173,18 +173,18 @@ function project_posttransform(doc) {
 }
 
 function getSFFieldsString(conv_map) {
-   	var fields = []
+   	var fields_map = {}
 	const iterate = (obj) => {
 	    Object.keys(obj).forEach(key => {
 
 	    if (typeof obj[key] === 'object') {
 	            iterate(obj[key])
-	        } else fields.push(obj[key])
+	        } else fields_map[obj[key]] = 1;
 	    }) 
 	}
 	iterate(conv_map)
 
-	return fields.join(",");
+	return Object.keys(fields_map).join(",");
 }
 
 function getSFFieldsString_project() {
