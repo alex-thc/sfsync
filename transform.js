@@ -9,14 +9,20 @@ const mongo2sf_project_map = {
 	"active" : "pse__Is_Active__c",
 	"stage" : "pse__Stage__c",
 	"owner" : "Project_Owner__r.Name",
+	"owner_email" : "Project_Owner__r.Email",
 	"project_manager" : "pse__Project_Manager__r.Name",
+	"project_manager_email" : "pse__Project_Manager__r.Email",
 	"ps_ops_resource" : "PS_Ops_Resource__r.Name",
+	"ps_ops_resource_email" : "PS_Ops_Resource__r.Email",
+
 	"type" : "pse__Project_Type__c",
 
 	"opportunity" : {
 		"name" : "pse__Opportunity__r.Name",
 		"owner" : "pse__Opportunity__r.Owner.Name",
+		"owner_email" : "pse__Opportunity__r.Owner.Email",
 		"engagement_manager" : "pse__Opportunity__r.Eng_Manager__r.Name",
+		"engagement_manager_email" : "pse__Opportunity__r.Eng_Manager__r.Email",
 		"_id" : "pse__Opportunity__r.Id"
 	},
 	
