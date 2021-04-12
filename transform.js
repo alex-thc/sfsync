@@ -40,6 +40,7 @@ const mongo2sf_project_map = {
 		"active_csm" : "Active_CSM__c",
 		"remaining_hours_will_expire" : "Remaining_Hours_Will_Expire__c",
 		"product_end_date" : "pse__End_Date__c",
+		"product_start_date" : "pse__Start_Date__c",
 	},
 	"SystemModstamp" : "SystemModstamp"
 }
