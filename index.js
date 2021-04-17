@@ -3,9 +3,34 @@ const Realm = require('realm-web');
 const sync = require('./sync');
 var assert = require('assert');
 var CONFIG = require('./config-prod.json');
+const yargs = require('yargs');
 
-//TODO: need to trigger the full resync daily (for projects) to deal with joined fields we don't track
-//or do a selective query somehow
+const argv = yargs
+    .command('sync', 'Trigger manual sync', {
+        proj: {
+            alias: 'p',
+            description: 'Projects',
+            type: 'bool',
+        },
+        ms: {
+            alias: 'm',
+            description: 'Milestones',
+            type: 'bool',
+        },
+        opp: {
+            alias: 'o',
+            description: 'Opportunities',
+            type: 'bool',
+        },
+        sched: {
+            alias: 's',
+            description: 'Schedules',
+            type: 'bool',
+        }
+    })
+    .help()
+    .alias('help', 'h')
+    .argv;
 
 const realmApp = new Realm.App({ id: CONFIG.realmAppId });
 const realmApiKey = CONFIG.realmApiKey
@@ -120,6 +145,18 @@ async function watcher(realmUser,dbCollection) {
     }
   }
 
+async function manualSync(realmUser,dbCollection, args) {
+	const request = {
+		type: "manual_override",
+		proj: args.proj,
+		ms: args.ms,
+		opp: args.opp,
+		sched: args.sched
+	};
+
+	await sync.syncSFChanges(oauth2, CONFIG.sfUser, CONFIG.sfPasswordWithKey, realmUser, dbCollection, request);
+}
+
 loginApiKey(realmApiKey).then(user => {
     console.log("Successfully logged in to Realm!");
 
@@ -127,6 +164,11 @@ loginApiKey(realmApiKey).then(user => {
       .mongoClient('mongodb-atlas')
       .db('sync')
       .collection('requests');
+
+    if (argv._.includes('sync')) {
+      manualSync(user, dbCollection, argv); 
+      return;
+    }
 
     let timerId = setTimeout(async function watchForUpdates() {
         timerId && clearTimeout(timerId);

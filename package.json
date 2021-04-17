@@ -12,6 +12,7 @@
     "jsforce": "^1.10.0",
     "moment": "^2.29.1",
     "mongodb": "^3.6.2",
-    "realm-web": "^1.0.0-rc.1"
+    "realm-web": "^1.0.0-rc.1",
+    "yargs": "^16.2.0"
   }
 }

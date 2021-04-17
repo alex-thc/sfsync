@@ -37,20 +37,37 @@ async function syncSFChanges(oauth2, sfUser, sfPasswordWithKey, realmUser, dbCol
 		accessToken : tokenResponse.access_token
 	});
 
-	await loader.loadProjects(realmUser,conn);
-	updateRequest(dbCollection,request,{"ts.projects":new Date()});
+	if (request.type !== "manual_override" || request.proj === true)
+	{
+		await loader.loadProjects(realmUser,conn);
+		if (request.type !== "manual_override")
+			updateRequest(dbCollection,request,{"ts.projects":new Date()});
+	}
 
-	await loader.loadMilestones(realmUser,conn);
-	updateRequest(dbCollection,request,{"ts.milestones":new Date()});
+	if (request.type !== "manual_override" || request.ms === true)
+	{
+		await loader.loadMilestones(realmUser,conn);
+		if (request.type !== "manual_override")
+			updateRequest(dbCollection,request,{"ts.milestones":new Date()});
+	}
 
-	await loader.loadSchedules(realmUser,conn);
-	updateRequest(dbCollection,request,{"ts.schedules":new Date()});
+	if (request.type !== "manual_override" || request.opp === true)
+	{
+		await loader.loadOpportunities(realmUser,conn);
+		if (request.type !== "manual_override")
+			updateRequest(dbCollection,request,{"ts.opportunities":new Date()});
+	}
 
-	await loader.loadOpportunities(realmUser,conn);
-	updateRequest(dbCollection,request,{"ts.opportunities":new Date()});
+	if (request.type !== "manual_override" || request.sched === true)
+	{
+		await loader.loadSchedules(realmUser,conn);
+		if (request.type !== "manual_override")
+			updateRequest(dbCollection,request,{"ts.schedules":new Date()});
 
-	await loader.syncSchedules(realmUser,conn);
-	updateRequest(dbCollection,request,{"ts.schedules_sync":new Date()});
+		await loader.syncSchedules(realmUser,conn);
+		if (request.type !== "manual_override")
+			updateRequest(dbCollection,request,{"ts.schedules_sync":new Date()});
+	}
 }
 
 module.exports = { 
