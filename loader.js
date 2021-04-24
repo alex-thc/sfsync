@@ -238,6 +238,87 @@ async function loadOpportunities(user,conn,resync=false) {
 	console.log("Done.");
 }
 
+async function loadGDocs(user,conn,resync=false) {
+	  console.log("Loading google docs...");
+	  var ts = await user.functions.getTimestamp("gdoc");
+	  console.log("GDoc timestamp:",ts)
+	  var cond_where;
+	  if (ts && !resync) {
+	  	let date = moment(ts).toISOString();
+	  	cond_where = `SystemModstamp > ${date}`
+	  } else {
+	  	//we need to get anything with close date from 12 months ago (just in case)
+	  	let date = moment().subtract(12, 'months').toISOString();
+	  	//console.log(date)
+	  	cond_where = `CreatedDate >= ${date}`
+	  }
+
+	  var filter = "(Name LIKE 'PS Scope%' OR Name LIKE 'Scope%')";
+
+	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_gdoc()} FROM GoogleDoc WHERE ${cond_where} AND ${filter}`);
+	  // console.log(`Total records: ${result.totalSize}`);
+	  // return;
+	  var done = false;
+	  var fetched = 0;
+	  while(! done) {
+	  		done = result.done;
+			fetched = fetched + result.records.length;
+			console.log(`Fetched: ${fetched}/${result.totalSize}`);
+			// console.log(result.records)
+			// console.log(tr.gdocs_transform(result.records))
+			if (result.records.length > 0) {
+			  let docs = tr.gdocs_transform(result.records)
+			  await user.functions.loadDocuments("attachment",docs)
+			}
+
+	  		if (! result.done) {
+	  		      result = await sfQueryMoreWrapper(conn, result.nextRecordsUrl);
+	  		}
+	}
+	console.log("Done.");
+}
+
+async function loadNotes(user,conn,resync=false) {
+	  console.log("Loading notes...");
+	  var ts = await user.functions.getTimestamp("note");
+	  console.log("Note timestamp:",ts)
+	  var cond_where;
+	  if (ts && !resync) {
+	  	let date = moment(ts).toISOString();
+	  	cond_where = `SystemModstamp > ${date}`
+	  } else {
+	  	//we need to get anything with close date from 12 months ago (just in case)
+	  	let date = moment().subtract(12, 'months').toISOString();
+	  	//console.log(date)
+	  	cond_where = `CreatedDate >= ${date}`
+	  }
+
+	  var filter = "(Title LIKE 'PS Scope%' OR Title LIKE 'Scope%')";
+
+	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_note()} FROM Note WHERE ${cond_where} AND ${filter}`);
+	  // console.log(`Total records: ${result.totalSize}`);
+	  // return;
+	  var done = false;
+	  var fetched = 0;
+	  while(! done) {
+	  		done = result.done;
+			fetched = fetched + result.records.length;
+			console.log(`Fetched: ${fetched}/${result.totalSize}`);
+			// console.log(result.records)
+			// console.log(tr.notes_transform(result.records))
+			if (result.records.length > 0) {
+			  let docs = tr.notes_transform(result.records)
+			  await user.functions.loadDocuments("attachment",docs)
+			}
+
+	  		if (! result.done) {
+	  		      result = await sfQueryMoreWrapper(conn, result.nextRecordsUrl);
+	  		}
+	}
+	console.log("Done.");
+}
+
 module.exports = { 
-	loadProjects, loadSchedules, loadMilestones, syncSchedules, loadOpportunities
+	loadProjects, loadSchedules, loadMilestones, syncSchedules, loadOpportunities, 
+	loadGDocs, loadNotes
 	}

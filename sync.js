@@ -58,6 +58,17 @@ async function syncSFChanges(oauth2, sfUser, sfPasswordWithKey, realmUser, dbCol
 			updateRequest(dbCollection,request,{"ts.opportunities":new Date()});
 	}
 
+	if (request.type !== "manual_override" || request.attach === true)
+	{
+		await loader.loadGDocs(realmUser,conn);
+		if (request.type !== "manual_override")
+			updateRequest(dbCollection,request,{"ts.gdocs":new Date()});
+
+		await loader.loadNotes(realmUser,conn);
+		if (request.type !== "manual_override")
+			updateRequest(dbCollection,request,{"ts.notes":new Date()});
+	}
+
 	if (request.type !== "manual_override" || request.sched === true)
 	{
 		await loader.loadSchedules(realmUser,conn);

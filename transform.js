@@ -145,6 +145,32 @@ const mongo2sf_opportunity_map = {
 	"SystemModstamp" : "SystemModstamp"
 }
 
+const mongo2sf_note_map = {
+	"_id" : "Id",
+	"name" : "Title",
+	"body" : "Body",
+
+	"owner" : "Owner.Name",
+	"parentId" : "ParentId",
+
+	"isDeleted" : "IsDeleted",
+
+	"SystemModstamp" : "SystemModstamp"
+}
+
+const mongo2sf_gdoc_map = {
+	"_id" : "Id",
+	"name" : "Name",
+	"url" : "Url",
+
+	"owner" : "Owner.Name",
+	"parentId" : "ParentId",
+
+	"isDeleted" : "IsDeleted",
+
+	"SystemModstamp" : "SystemModstamp"
+}
+
 function getSpecialTagValue(ps_notes, tag) {
 	if (!ps_notes) return null;
 	return (ps_notes.indexOf(`${tag}="Yes"`) >= 0) ? "Yes" : (ps_notes.indexOf(`${tag}="Maybe"`) >= 0) ? "Maybe" : (ps_notes.indexOf(`${tag}="No"`) >= 0) ? "No" : null;
@@ -180,6 +206,16 @@ function project_posttransform(doc) {
 	return doc;
 }
 
+function gdoc_posttransform(doc) {
+	doc.type = "gdoc";
+	return doc;
+}
+
+function note_posttransform(doc) {
+	doc.type = "note";
+	return doc;
+}
+
 function getSFFieldsString(conv_map) {
    	var fields_map = {}
 	const iterate = (obj) => {
@@ -211,6 +247,14 @@ function getSFFieldsString_schedule() {
 
 function getSFFieldsString_opportunity() {
 	return getSFFieldsString(mongo2sf_opportunity_map)
+}
+
+function getSFFieldsString_gdoc() {
+	return getSFFieldsString(mongo2sf_gdoc_map)
+}
+
+function getSFFieldsString_note() {
+	return getSFFieldsString(mongo2sf_note_map)
 }
 
 function get_value_flat(doc, key) {
@@ -291,9 +335,19 @@ function opportunities_transform(sf_docs) {
 	return transform(sf_docs, mongo2sf_opportunity_map, opportunity_posttransform)
 }
 
+function gdocs_transform(sf_docs) {
+	return transform(sf_docs, mongo2sf_gdoc_map, gdoc_posttransform)
+}
+
+function notes_transform(sf_docs) {
+	return transform(sf_docs, mongo2sf_note_map, note_posttransform)
+}
+
 module.exports = { 
 	projects_transform, getSFFieldsString_project,
 	milestones_transform, getSFFieldsString_milestone,
 	schedules_transform, getSFFieldsString_schedule, 
-	opportunities_transform, getSFFieldsString_opportunity
+	opportunities_transform, getSFFieldsString_opportunity,
+	gdocs_transform, getSFFieldsString_gdoc,
+	notes_transform, getSFFieldsString_note,
 }
