@@ -85,6 +85,7 @@ const mongo2sf_schedule_map = {
 	"isDeleted" : "IsDeleted",
 	"week" : "pse__Start_Date__c",
 	"resource" : "pse__Resource__r.Name",
+	"resource_email" : "pse__Resource__r.Email",
 	"estimated" : {
 		"hours" : "pse__Estimated_Hours__c",
 		"days" : "pse__Estimated_Days__c",
