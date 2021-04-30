@@ -38,6 +38,7 @@ const mongo2sf_project_map = {
 		"pm_stage" : "PM_Stage__c",
 		"next_projected_delivery_date" : "Next_Projected_Delivery_Date__c",
 		"active_csm" : "Active_CSM__c",
+		"csm_email" : "pse__Account__r.CSM_Email__c",
 		"remaining_hours_will_expire" : "Remaining_Hours_Will_Expire__c",
 		"product_end_date" : "pse__End_Date__c",
 		"product_start_date" : "pse__Start_Date__c",
