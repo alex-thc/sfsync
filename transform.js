@@ -23,7 +23,9 @@ const mongo2sf_project_map = {
 		"owner_email" : "pse__Opportunity__r.Owner.Email",
 		"engagement_manager" : "pse__Opportunity__r.Eng_Manager__r.Name",
 		"engagement_manager_email" : "pse__Opportunity__r.Eng_Manager__r.Email",
-		"_id" : "pse__Opportunity__r.Id"
+		"_id" : "pse__Opportunity__r.Id",
+		"geo_region": "pse__Opportunity__r.Account.Geo_Region__c",
+    	"owner_region" : "pse__Opportunity__r.Account.Owner.Region__c"
 	},
 	
 	"summary" : {
@@ -173,6 +175,35 @@ const mongo2sf_gdoc_map = {
 	"SystemModstamp" : "SystemModstamp"
 }
 
+const mongo2sf_case_map = {
+	"_id" : "Id",
+
+	"case_number" : "CaseNumber",	
+	"account_id" : "AccountId",
+	"project_id" : "Project__r.Id",
+	"project_name": "Project__r.Name",
+
+	//"cloud_project_id" : "Cloud_Project__r.Id",
+	//"cloud_project_name": "Cloud_Project__r.Name",
+
+	"date_created" : "CreatedDate",
+	"reporter" : "Contact.Name",
+
+	//"fts" : "Follow_The_Sun__c",
+
+	"customer_escalated" : "Customer_Escalated__c",
+
+	"owner" : "Owner.Name",
+
+	"severity" : "Severity__c",
+
+	"subject" : "Subject",
+
+	"status" : "Status",
+
+	"SystemModstamp" : "SystemModstamp"
+}
+
 function getSpecialTagValue(ps_notes, tag) {
 	if (!ps_notes) return null;
 	return (ps_notes.indexOf(`${tag}="Yes"`) >= 0) ? "Yes" : (ps_notes.indexOf(`${tag}="Maybe"`) >= 0) ? "Maybe" : (ps_notes.indexOf(`${tag}="No"`) >= 0) ? "No" : null;
@@ -257,6 +288,10 @@ function getSFFieldsString_gdoc() {
 
 function getSFFieldsString_note() {
 	return getSFFieldsString(mongo2sf_note_map)
+}
+
+function getSFFieldsString_case() {
+	return getSFFieldsString(mongo2sf_case_map)
 }
 
 function get_value_flat(doc, key) {
@@ -345,6 +380,10 @@ function notes_transform(sf_docs) {
 	return transform(sf_docs, mongo2sf_note_map, note_posttransform)
 }
 
+function cases_transform(sf_docs) {
+	return transform(sf_docs, mongo2sf_case_map)
+}
+
 module.exports = { 
 	projects_transform, getSFFieldsString_project,
 	milestones_transform, getSFFieldsString_milestone,
@@ -352,4 +391,5 @@ module.exports = {
 	opportunities_transform, getSFFieldsString_opportunity,
 	gdocs_transform, getSFFieldsString_gdoc,
 	notes_transform, getSFFieldsString_note,
+	cases_transform, getSFFieldsString_case,
 }
