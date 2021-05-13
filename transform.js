@@ -118,6 +118,22 @@ const mongo2sf_opportunity_map = {
     "forecast_category" : "ForecastCategoryName",
     "close_date" : "CloseDate",
     "amount" : "convertCurrency(Amount)",
+
+    "line_items" : ["OpportunityLineItems", {
+    	"name": "Name",
+    	"list_price" : "convertCurrency(ListPrice)",
+    	"product" : {
+    		"name" : "Product2.Name",
+    		"code" : "ProductCode",
+    		"family" : "Product_Family__c",
+    		"subfamily" : "Product_Sub_Family__c",
+    		"tag" : "Product_Summary_Tag__c",
+    	},
+    	"qty" : "Quantity",
+    	"total" : "convertCurrency(TotalPrice)",
+    	"discount_pct" : "Discount_Perc__c",
+    }],
+
     "account": {
     	"name": "Account.Name",
     	"_id": "Account.Id",
@@ -253,10 +269,18 @@ function getSFFieldsString(conv_map) {
    	var fields_map = {}
 	const iterate = (obj) => {
 	    Object.keys(obj).forEach(key => {
-
-	    if (typeof obj[key] === 'object') {
-	            iterate(obj[key])
-	        } else fields_map[obj[key]] = 1;
+		    if (typeof obj[key] === 'object') {
+		    	if (Array.isArray(obj[key])) {
+			    	const embedded_r_name = obj[key][0];
+			    	const embedded_conv_map = obj[key][1];
+			    	const embedded_fields = getSFFieldsString(embedded_conv_map);
+			    	const embedded_soql = `(SELECT ${embedded_fields} FROM ${embedded_r_name})`;
+			    	fields_map[embedded_soql] = 1;
+		    	} else
+		        	iterate(obj[key])
+		    } 
+		    else 
+		    	fields_map[obj[key]] = 1;
 	    }) 
 	}
 	iterate(conv_map)
@@ -340,8 +364,15 @@ function transform(sf_docs, conv_map, func_posttransform = null) {
 		    Object.keys(obj).forEach(key => {
 
 			    if (typeof obj[key] === 'object') {
-		    		target[key] = {}
-		            iterate(obj[key],target[key])
+			    	if (Array.isArray(obj[key])) {
+			    		const resp = sf_docs[i][obj[key][0]];
+			    		if (resp && resp.totalSize > 0) {
+			    			target[key] = transform(sf_docs[i][obj[key][0]].records, obj[key][1]);
+			    		}
+			    	} else {
+		    			target[key] = {}
+		            	iterate(obj[key],target[key])
+		        	}
 			    } else 
 			        target[key] = parseAsNeeded(get_value_flat(sf_docs[i], obj[key]))
 		    }) 
