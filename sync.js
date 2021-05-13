@@ -37,45 +37,54 @@ async function syncSFChanges(oauth2, sfUser, sfPasswordWithKey, realmUser, dbCol
 		accessToken : tokenResponse.access_token
 	});
 
+	const resync = (request.resync === true);
+
 	if (request.type !== "manual_override" || request.proj === true)
 	{
-		await loader.loadProjects(realmUser,conn);
+		await loader.loadProjects(realmUser,conn, resync);
 		if (request.type !== "manual_override")
 			updateRequest(dbCollection,request,{"ts.projects":new Date()});
 	}
 
 	if (request.type !== "manual_override" || request.ms === true)
 	{
-		await loader.loadMilestones(realmUser,conn);
+		await loader.loadMilestones(realmUser,conn, resync);
 		if (request.type !== "manual_override")
 			updateRequest(dbCollection,request,{"ts.milestones":new Date()});
 	}
 
 	if (request.type !== "manual_override" || request.opp === true)
 	{
-		await loader.loadOpportunities(realmUser,conn);
+		await loader.loadOpportunities(realmUser,conn, resync);
 		if (request.type !== "manual_override")
 			updateRequest(dbCollection,request,{"ts.opportunities":new Date()});
 	}
 
 	if (request.type !== "manual_override" || request.attach === true)
 	{
-		await loader.loadGDocs(realmUser,conn);
+		await loader.loadGDocs(realmUser,conn, resync);
 		if (request.type !== "manual_override")
 			updateRequest(dbCollection,request,{"ts.gdocs":new Date()});
 
-		await loader.loadNotes(realmUser,conn);
+		await loader.loadNotes(realmUser,conn, resync);
 		if (request.type !== "manual_override")
 			updateRequest(dbCollection,request,{"ts.notes":new Date()});
 	}
 
+	if (request.type !== "manual_override" || request.cs === true)
+	{
+		await loader.loadCases(realmUser,conn, resync);
+		if (request.type !== "manual_override")
+			updateRequest(dbCollection,request,{"ts.cases":new Date()});
+	}
+
 	if (request.type !== "manual_override" || request.sched === true)
 	{
-		await loader.loadSchedules(realmUser,conn);
+		await loader.loadSchedules(realmUser,conn, resync);
 		if (request.type !== "manual_override")
 			updateRequest(dbCollection,request,{"ts.schedules":new Date()});
 
-		await loader.syncSchedules(realmUser,conn);
+		await loader.syncSchedules(realmUser,conn, resync);
 		if (request.type !== "manual_override")
 			updateRequest(dbCollection,request,{"ts.schedules_sync":new Date()});
 	}

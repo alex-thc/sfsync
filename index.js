@@ -31,6 +31,16 @@ const argv = yargs
             alias: 'a',
             description: 'Attachments',
             type: 'bool',
+        },
+        cs: {
+            alias: 'c',
+            description: 'Cases',
+            type: 'bool',
+        },
+        resync: {
+            alias: 'x',
+            description: 'Resync',
+            type: 'bool',
         }
     })
     .help()
@@ -158,6 +168,8 @@ async function manualSync(realmUser,dbCollection, args) {
 		opp: args.opp,
 		sched: args.sched,
 		attach: args.attach,
+		cs: args.cs,
+		resync: args.resync
 	};
 
 	await sync.syncSFChanges(oauth2, CONFIG.sfUser, CONFIG.sfPasswordWithKey, realmUser, dbCollection, request);

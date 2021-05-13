@@ -183,13 +183,13 @@ const mongo2sf_case_map = {
 	"project_id" : "Project__r.Id",
 	"project_name": "Project__r.Name",
 
-	//"cloud_project_id" : "Cloud_Project__r.Id",
-	//"cloud_project_name": "Cloud_Project__r.Name",
+	"cloud_project_id" : "Cloud_Project__r.Id",
+	"cloud_project_name": "Cloud_Project__r.Name",
 
 	"date_created" : "CreatedDate",
 	"reporter" : "Contact.Name",
 
-	//"fts" : "Follow_The_Sun__c",
+	"fts" : "Follow_The_Sun__c",
 
 	"customer_escalated" : "Customer_Escalated__c",
 

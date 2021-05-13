@@ -318,7 +318,47 @@ async function loadNotes(user,conn,resync=false) {
 	console.log("Done.");
 }
 
+async function loadCases(user,conn,resync=false) {
+	  console.log("Loading cases...");
+	  var ts = null;//await user.functions.getTimestamp("case");
+	  console.log("Case timestamp:",ts)
+	  var cond_where;
+	  if (ts && !resync) {
+	  	let date = moment(ts).toISOString();
+	  	cond_where = `SystemModstamp > ${date}`
+	  } else {
+	  	//we need to get anything created in the last 3 months
+	  	let date = moment().subtract(3, 'months').toISOString();
+	  	//console.log(date)
+	  	cond_where = `CreatedDate >= ${date}`
+	  }
+
+	  var filter = "(recordtypeid = '012A00000012c0BIAQ')";
+
+	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_case()} FROM Case WHERE ${cond_where} AND ${filter} LIMIT 10`);
+	  // console.log(`Total records: ${result.totalSize}`);
+	  // return;
+	  var done = false;
+	  var fetched = 0;
+	  while(! done) {
+	  		done = result.done;
+			fetched = fetched + result.records.length;
+			console.log(`Fetched: ${fetched}/${result.totalSize}`);
+			// console.log(result.records)
+			console.log(tr.cases_transform(result.records))
+			// if (result.records.length > 0) {
+			//   let docs = tr.cases_transform(result.records)
+			//   await user.functions.loadDocuments("case",docs)
+			// }
+
+	  		if (! result.done) {
+	  		      result = await sfQueryMoreWrapper(conn, result.nextRecordsUrl);
+	  		}
+	}
+	console.log("Done.");
+}
+
 module.exports = { 
 	loadProjects, loadSchedules, loadMilestones, syncSchedules, loadOpportunities, 
-	loadGDocs, loadNotes
+	loadGDocs, loadNotes, loadCases
 	}
