@@ -203,6 +203,7 @@ const mongo2sf_case_map = {
 	"cloud_project_name": "Cloud_Project__r.Name",
 
 	"date_created" : "CreatedDate",
+	"last_modified" : "LastModifiedDate",
 	"reporter" : "Contact.Name",
 
 	"fts" : "Follow_The_Sun__c",
@@ -250,8 +251,20 @@ function getStageSortId(stage) {
 	}
 }
 
+function getCaseStatusSortId(status) {
+	switch(status) {
+		case "Closed" : return 50;
+		default: return 0;
+	}
+}
+
 function project_posttransform(doc) {
 	doc.details.pm_stage_sortid = getStageSortId(doc.details.pm_stage);
+	return doc;
+}
+
+function case_posttransform(doc) {
+	doc.status_sortid = getCaseStatusSortId(doc.status);
 	return doc;
 }
 
@@ -412,7 +425,7 @@ function notes_transform(sf_docs) {
 }
 
 function cases_transform(sf_docs) {
-	return transform(sf_docs, mongo2sf_case_map)
+	return transform(sf_docs, mongo2sf_case_map, case_posttransform)
 }
 
 module.exports = { 
