@@ -32,6 +32,7 @@ const mongo2sf_project_map = {
 		"planned_hours" : "pse__Planned_Hours__c",
 		"gap_hours" : "Gap_Hours__c",
 		"backlog_hours" : "Backlog_Hours__c",
+		"backlog_bookings" : "convertCurrency(Expiring_Bookings__c)",
 	},
 	
 	"details" : {
@@ -156,6 +157,7 @@ const mongo2sf_opportunity_map = {
     "sales_forecast" : {
     	"AE" : "In_Forecast_AE__c",
     	"RD" : "In_Forecast_RD__c",
+//    	"RD_services" : "In_Forecast_RD_Services__c",
     	"amount_services_RD" : "In_Forecast_Amount_Services_RD__c"
     },
 
