@@ -27,6 +27,11 @@ const argv = yargs
             description: 'Schedules',
             type: 'bool',
         },
+        tc: {
+            alias: 't',
+            description: 'Timecards',
+            type: 'bool',
+        },
         attach: {
             alias: 'a',
             description: 'Attachments',
@@ -169,7 +174,8 @@ async function manualSync(realmUser,dbCollection, args) {
 		sched: args.sched,
 		attach: args.attach,
 		cs: args.cs,
-		resync: args.resync
+		resync: args.resync,
+        tc: args.tc,
 	};
 
 	await sync.syncSFChanges(oauth2, CONFIG.sfUser, CONFIG.sfPasswordWithKey, realmUser, dbCollection, request);

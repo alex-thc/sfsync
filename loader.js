@@ -198,6 +198,44 @@ async function syncSchedules(user,conn) {
 	console.log("Done.");
 }
 
+async function loadTimecards(user,conn,resync=false) {
+	  console.log("Loading timecards...");
+	  var ts = await user.functions.getTimestamp("timecard");
+	  console.log("Timecard timestamp:",ts)
+	  var cond_where;
+	  if (ts && !resync) {
+	  	let date = moment(ts).toISOString();
+	  	cond_where = `SystemModstamp > ${date}`
+	  } else {
+	  	//we need to get anything for the last month
+	  	let date = moment().subtract(1, 'months').format('YYYY-MM-DD');
+	  	cond_where = `pse__End_Date__c >= ${date}`
+	  }
+
+	  //only customer projects
+	  cond_where = `(${cond_where} AND pse__Assignment__r.pse__Project__r.pse__Project_Type__c = 'Customer Project')`
+
+	  var result = await sfQueryWrapper(conn, `SELECT ${tr.getSFFieldsString_timecard()} FROM pse__Timecard_Header__c WHERE ${cond_where}`);
+	  var done = false;
+	  var fetched = 0;
+	  while(! done) {
+	  		done = result.done;
+			fetched = fetched + result.records.length;
+			console.log(`Fetched: ${fetched}/${result.totalSize}`);
+			//console.log(result.records)
+			//console.log(tr.timecards_transform(result.records))
+			if (result.records.length > 0) {
+			  let docs = tr.timecards_transform(result.records)
+			  await user.functions.loadDocuments("timecard",docs)
+			}
+
+	  		if (! result.done) {
+	  		      result = await sfQueryMoreWrapper(conn, result.nextRecordsUrl);
+	  		}
+	}
+	console.log("Done.");
+}
+
 async function loadOpportunities(user,conn,resync=false) {
 	  console.log("Loading opportunities...");
 	  var ts = await user.functions.getTimestamp("opportunity");
@@ -359,6 +397,6 @@ async function loadCases(user,conn,resync=false) {
 }
 
 module.exports = { 
-	loadProjects, loadSchedules, loadMilestones, syncSchedules, loadOpportunities, 
-	loadGDocs, loadNotes, loadCases
+	loadProjects, loadSchedules, loadMilestones, syncSchedules, loadOpportunities,
+	loadGDocs, loadNotes, loadCases, loadTimecards
 	}

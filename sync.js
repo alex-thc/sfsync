@@ -88,6 +88,13 @@ async function syncSFChanges(oauth2, sfUser, sfPasswordWithKey, realmUser, dbCol
 		if (request.type !== "manual_override")
 			updateRequest(dbCollection,request,{"ts.schedules_sync":new Date()});
 	}
+
+	if (request.type !== "manual_override" || request.tc === true)
+	{
+		await loader.loadTimecards(realmUser,conn, resync);
+		if (request.type !== "manual_override")
+			updateRequest(dbCollection,request,{"ts.timecards":new Date()});
+	}
 }
 
 module.exports = { 

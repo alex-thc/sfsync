@@ -223,6 +223,52 @@ const mongo2sf_case_map = {
 	"SystemModstamp" : "SystemModstamp"
 }
 
+const mongo2sf_timecard_map = {
+	"_id" : "Id",
+	"name" : "Name",
+
+	"billable" : "pse__Billable__c",
+
+	"assignment" : { 
+		"_id" : "pse__Assignment__r.Id",
+		"name" : "pse__Assignment__r.Name",
+	},
+
+	"milestone" : { 
+		"_id" : "pse__Milestone__r.Id",
+		"name" : "pse__Milestone__r.Name",
+	},
+
+	"project" : { 
+		"_id" : "pse__Project__r.Id",
+		"name" : "pse__Project__r.Name",
+	},
+
+	"resource" : {
+		"name" : "pse__Resource__r.Name",
+		"email" : "pse__Resource__r.Email",
+	},
+
+	"approver" : { 
+		"name" : "pse__Approver__r.Name",
+		"email" : "pse__Approver__r.Email"
+	},
+
+	"start_date" : "pse__Start_Date__c",
+	"end_date" : "pse__End_Date__c",
+	"status" : "pse__Status__c",
+
+	"hours_total" : "pse__Total_Hours__c",
+	"amount_billable" : "pse__Total_Billable_Amount__c",
+	"time_credited" : "pse__Time_Credited__c",
+
+	"role" : "pse__Assignment__r.pse__Role__c",
+
+	"isDeleted" : "IsDeleted",
+
+	"SystemModstamp" : "SystemModstamp"
+}
+
 function getSpecialTagValue(ps_notes, tag) {
 	if (!ps_notes) return null;
 	return (ps_notes.indexOf(`${tag}="Yes"`) >= 0) ? "Yes" : (ps_notes.indexOf(`${tag}="Maybe"`) >= 0) ? "Maybe" : (ps_notes.indexOf(`${tag}="No"`) >= 0) ? "No" : null;
@@ -333,6 +379,10 @@ function getSFFieldsString_case() {
 	return getSFFieldsString(mongo2sf_case_map)
 }
 
+function getSFFieldsString_timecard() {
+	return getSFFieldsString(mongo2sf_timecard_map)
+}
+
 function get_value_flat(doc, key) {
 	//strip the currency conversion function if present
 	if (key.startsWith("convertCurrency("))
@@ -430,6 +480,10 @@ function cases_transform(sf_docs) {
 	return transform(sf_docs, mongo2sf_case_map, case_posttransform)
 }
 
+function timecards_transform(sf_docs) {
+	return transform(sf_docs, mongo2sf_timecard_map)
+}
+
 module.exports = { 
 	projects_transform, getSFFieldsString_project,
 	milestones_transform, getSFFieldsString_milestone,
@@ -438,4 +492,5 @@ module.exports = {
 	gdocs_transform, getSFFieldsString_gdoc,
 	notes_transform, getSFFieldsString_note,
 	cases_transform, getSFFieldsString_case,
+	timecards_transform, getSFFieldsString_timecard
 }
