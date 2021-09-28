@@ -104,6 +104,7 @@ const mongo2sf_schedule_map = {
 		"start_date" : "pse__Assignment__r.pse__Start_Date__c",
 		"end_date" : "pse__Assignment__r.pse__End_Date__c",
 		"createdDate" : "pse__Assignment__r.CreatedDate",
+		"_id" : "pse__Assignment__r.Id",
 	},
 	"SystemModstamp" : "SystemModstamp"
 }
