@@ -327,6 +327,19 @@ function note_posttransform(doc) {
 	return doc;
 }
 
+function getSunday(d) {
+    d = new Date(d);
+    var day = d.getUTCDay(),
+    diff = d.getDate() - day;
+    s = new Date(d.setDate(diff))
+    return s;
+}
+
+function schedule_posttransform(doc) {
+	doc.cal_week = getSunday(doc.week);
+	return doc;
+}
+
 function getSFFieldsString(conv_map) {
    	var fields_map = {}
 	const iterate = (obj) => {
@@ -462,7 +475,7 @@ function milestones_transform(sf_docs) {
 }
 
 function schedules_transform(sf_docs) {
-	return transform(sf_docs, mongo2sf_schedule_map)
+	return transform(sf_docs, mongo2sf_schedule_map, schedule_posttransform)
 }
 
 function opportunities_transform(sf_docs) {
