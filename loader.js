@@ -114,11 +114,12 @@ async function loadSchedules(user,conn,resync=false) {
 	  } else {
 	  	//we need to get anything that expires in this quarter or later
 	  	//for simplicity, we'll just look 3 months back
-	  	let date = moment().subtract(3, 'months').format('YYYY-MM-DD');
+	  	let date = moment().subtract(1, 'months').format('YYYY-MM-DD');
 	  	//console.log(date)
 	  	//return
 	  	//cond_where = "pse__Stage__c IN ('In Progress','At Risk') OR (pse__Stage__c = 'Expired' AND )"
-	  	cond_where = `pse__Assignment__r.pse__Project__r.pse__End_Date__c >= ${date} AND (pse__Estimated_Hours__c > 0 OR pse__Actual_Hours__c > 0)`
+	  	//cond_where = `pse__Assignment__r.pse__Project__r.pse__End_Date__c >= ${date} AND (pse__Estimated_Hours__c > 0 OR pse__Actual_Hours__c > 0)`
+	  	cond_where = `pse__Start_Date__c >= ${date}`;
 	  }
 
 	  //only customer projects
@@ -159,7 +160,7 @@ async function syncSchedules(user,conn) {
 	  var ids = [];
 	  var ids_map = {};
 	  for(let i in res) {
-	  	ids_map[res[i]._id.id] = 1;
+	  	ids_map[res[i]._id.id] = res[i]._id;
 	  }
 
 	  ids = Object.keys(ids_map);
@@ -172,7 +173,7 @@ async function syncSchedules(user,conn) {
 
 		    let cond_where = util.generateIdWhereClause(temparray);
 
-		     let result = await sfQueryWrapper(conn, `SELECT Id FROM pse__Est_Vs_Actuals__c WHERE ${cond_where}`);
+		     let result = await sfQueryWrapper(conn, `SELECT Id,pse__Assignment__r.pse__Milestone__r.Id FROM pse__Est_Vs_Actuals__c WHERE ${cond_where}`);
 			  let done = false;
 			  let fetched = 0;
 			  while(! done) {
@@ -180,8 +181,10 @@ async function syncSchedules(user,conn) {
 					fetched = fetched + result.records.length;
 					//console.log(`Fetched: ${fetched}/${result.totalSize}`);
 					if (result.records.length > 0) {
-					  for (let r in result.records)
-					  	delete ids_map[result.records[r]['Id']]
+					  for (let r in result.records) {
+					  	if (ids_map[result.records[r]['Id']].ms_id === result.records[r]['pse__Assignment__r']['pse__Milestone__r']['Id'])
+					  		delete ids_map[result.records[r]['Id']]
+					  }
 					}
 
 			  		if (! result.done) {
@@ -192,7 +195,7 @@ async function syncSchedules(user,conn) {
 		}
 
 	  console.log(`Deleting ${Object.keys(ids_map).length} keys`)
-	  dbCol.deleteMany({'_id.id':{$in: Object.keys(ids_map) }})
+	  dbCol.deleteMany({'_id':{$in: Object.values(ids_map) }})
 
 	 
 	console.log("Done.");
