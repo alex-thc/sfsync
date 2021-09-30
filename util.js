@@ -9,10 +9,10 @@ function generateIdWhereClause(ids) {
 
 	if (ids.length>1)
 		for (let i in ids.slice(0,ids.length-1)) {
-			where = where + `${ids[i]}','`
+			where = where + `${ids[i].id}','`
 		}
 
-	where = where + `${ids[ids.length-1]}')`
+	where = where + `${ids[ids.length-1].id}')`
 
 	return where;
 }

@@ -160,10 +160,10 @@ async function syncSchedules(user,conn) {
 	  var ids = [];
 	  var ids_map = {};
 	  for(let i in res) {
-	  	ids_map[res[i]._id.id] = res[i]._id;
+	  	ids_map[res[i]._id.id + "_" + res[i]._id.ms_id] = res[i]._id;
 	  }
 
-	  ids = Object.keys(ids_map);
+	  ids = Object.values(ids_map);
 
 		var i,j,temparray,chunk = 100;
 		for (i=0,j=ids.length; i<j; i+=chunk) {
@@ -182,8 +182,8 @@ async function syncSchedules(user,conn) {
 					//console.log(`Fetched: ${fetched}/${result.totalSize}`);
 					if (result.records.length > 0) {
 					  for (let r in result.records) {
-					  	if (ids_map[result.records[r]['Id']].ms_id === result.records[r]['pse__Assignment__r']['pse__Milestone__r']['Id'])
-					  		delete ids_map[result.records[r]['Id']]
+					  	let id_full = result.records[r]['Id'] + "_" + result.records[r]['pse__Assignment__r']['pse__Milestone__r']['Id'];
+					  	delete ids_map[id_full]
 					  }
 					}
 
