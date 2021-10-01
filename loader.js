@@ -171,7 +171,7 @@ async function syncSchedules(user,conn) {
 		    temparray = ids.slice(i,i+chunk);
 		    //console.log(`Processing ${temparray.length} records`)
 
-		    let cond_where = util.generateIdWhereClause(temparray);
+		    let cond_where = util.generateIdWhereClause(temparray,x=>x.id);
 
 		     let result = await sfQueryWrapper(conn, `SELECT Id,pse__Assignment__r.pse__Milestone__r.Id FROM pse__Est_Vs_Actuals__c WHERE ${cond_where}`);
 			  let done = false;
@@ -236,6 +236,60 @@ async function loadTimecards(user,conn,resync=false) {
 	  		      result = await sfQueryMoreWrapper(conn, result.nextRecordsUrl);
 	  		}
 	}
+	console.log("Done.");
+}
+
+async function syncTimecards(user,conn) {
+	  console.log("Syncing timecards...");
+	  var d = util.get7dbefore(new Date());
+
+	  var dbCol = user
+	      .mongoClient('mongodb-atlas')
+	      .db('shf')
+	      .collection('timecard');
+
+	  var res = await dbCol.find({start_date:{$gte: d}},{_id:1});
+	  var ids = [];
+	  var ids_map = {};
+	  for(let i in res) {
+	  	ids_map[res[i]._id] = res[i]._id;
+	  }
+
+	  ids = Object.values(ids_map);
+
+		var i,j,temparray,chunk = 100;
+		for (i=0,j=ids.length; i<j; i+=chunk) {
+
+		    temparray = ids.slice(i,i+chunk);
+		    //console.log(`Processing ${temparray.length} records`)
+
+		    let cond_where = util.generateIdWhereClause(temparray,x=>x);
+
+		     let result = await sfQueryWrapper(conn, `SELECT Id FROM pse__Timecard_Header__c WHERE ${cond_where}`);
+			  let done = false;
+			  let fetched = 0;
+			  while(! done) {
+			  		done = result.done;
+					fetched = fetched + result.records.length;
+					//console.log(`Fetched: ${fetched}/${result.totalSize}`);
+					if (result.records.length > 0) {
+					  for (let r in result.records) {
+					  	let id_full = result.records[r]['Id'];
+					  	delete ids_map[id_full]
+					  }
+					}
+
+			  		if (! result.done) {
+			  		      result = await sfQueryMoreWrapper(conn, result.nextRecordsUrl);
+			  		}
+			}
+
+		}
+
+	  console.log(`Deleting ${Object.keys(ids_map).length} keys`)
+	  dbCol.deleteMany({'_id':{$in: Object.values(ids_map) }})
+
+	 
 	console.log("Done.");
 }
 
@@ -401,5 +455,5 @@ async function loadCases(user,conn,resync=false) {
 
 module.exports = { 
 	loadProjects, loadSchedules, loadMilestones, syncSchedules, loadOpportunities,
-	loadGDocs, loadNotes, loadCases, loadTimecards
+	loadGDocs, loadNotes, loadCases, loadTimecards, syncTimecards
 	}

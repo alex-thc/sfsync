@@ -4,15 +4,15 @@ function get7dbefore(d) {
     return new Date(d.setDate(diff));
 }
 
-function generateIdWhereClause(ids) {
+function generateIdWhereClause(ids, func) {
 	var where = "Id IN ('"
 
 	if (ids.length>1)
 		for (let i in ids.slice(0,ids.length-1)) {
-			where = where + `${ids[i].id}','`
+			where = where + `${func(ids[i])}','`
 		}
 
-	where = where + `${ids[ids.length-1].id}')`
+	where = where + `${func(ids[ids.length-1])}')`
 
 	return where;
 }

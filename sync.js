@@ -94,6 +94,10 @@ async function syncSFChanges(oauth2, sfUser, sfPasswordWithKey, realmUser, dbCol
 		await loader.loadTimecards(realmUser,conn, resync);
 		if (request.type !== "manual_override")
 			updateRequest(dbCollection,request,{"ts.timecards":new Date()});
+
+		await loader.syncTimecards(realmUser,conn, resync);
+		if (request.type !== "manual_override")
+			updateRequest(dbCollection,request,{"ts.timecards_sync":new Date()});
 	}
 }
 
