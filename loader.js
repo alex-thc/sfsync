@@ -173,7 +173,7 @@ async function syncSchedules(user,conn) {
 
 		    let cond_where = util.generateIdWhereClause(temparray,x=>x.id);
 
-		     let result = await sfQueryWrapper(conn, `SELECT Id,pse__Assignment__r.pse__Milestone__r.Id FROM pse__Est_Vs_Actuals__c WHERE ${cond_where}`);
+		     let result = await sfQueryWrapper(conn, `SELECT Id,pse__Assignment__r.pse__Milestone__r.Id FROM pse__Est_Vs_Actuals__c WHERE ${cond_where} AND pse__Assignment__r.pse__Status__c != 'Closed'`);
 			  let done = false;
 			  let fetched = 0;
 			  while(! done) {
