@@ -147,9 +147,9 @@ async function loadSchedules(user,conn,resync=false) {
 }
 
 //hack function to sync future schedules since they may have been hard-deleted on the SF side
-async function syncSchedules(user,conn) {
+async function syncSchedules(user,conn, resync=false) {
 	  console.log("Syncing schedules...");
-	  var d = util.get7dbefore(new Date());
+	  var d = resync ? util.getSunday31dbefore(new Date()) : util.get7dbefore(new Date());
 
 	  var dbCol = user
 	      .mongoClient('mongodb-atlas')
