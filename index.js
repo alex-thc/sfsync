@@ -73,6 +73,9 @@ var oauth2 = new jsforce.OAuth2({
 
 async function request_should_ignore(dbCollection,request) {
   //check if we should be ignoring this one
+  if (request.type === "manual_override") 
+    return false;
+
   //last success within an hour
   let last_success = await sync.getLatestFinishedRequest(dbCollection);
   if (last_success && last_success.ts.finished
@@ -168,6 +171,7 @@ async function watcher(realmUser,dbCollection) {
 async function manualSync(realmUser,dbCollection, args) {
 	const request = {
 		type: "manual_override",
+        origin: "shell",
 		proj: args.proj,
 		ms: args.ms,
 		opp: args.opp,
