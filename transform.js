@@ -25,7 +25,8 @@ const mongo2sf_project_map = {
 		"engagement_manager_email" : "pse__Opportunity__r.Eng_Manager__r.Email",
 		"_id" : "pse__Opportunity__r.Id",
 		"geo_region": "pse__Opportunity__r.Account.Geo_Region__c",
-    	"owner_region" : "pse__Opportunity__r.Account.Owner.Region__c"
+    	"owner_region" : "pse__Opportunity__r.Account.Owner.Region__c",
+    	"ps_notes" : "pse__Opportunity__r.PS_Notes__c"
 	},
 	
 	"summary" : {
@@ -46,6 +47,7 @@ const mongo2sf_project_map = {
 		"product_end_date" : "pse__End_Date__c",
 		"product_start_date" : "pse__Start_Date__c",
 	},
+	"notes" : "pse__Notes__c",
 	"SystemModstamp" : "SystemModstamp"
 }
 
