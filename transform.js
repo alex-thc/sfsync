@@ -47,6 +47,12 @@ const mongo2sf_project_map = {
 		"product_end_date" : "pse__End_Date__c",
 		"product_start_date" : "pse__Start_Date__c",
 	},
+
+	"primary_customer_contact" : {
+		"name" : "Primary_Customer_Contact__c.Name",
+		"email" : "Primary_Customer_Contact__c.Email",
+	},
+
 	"notes" : "pse__Notes__c",
 	"SystemModstamp" : "SystemModstamp"
 }
