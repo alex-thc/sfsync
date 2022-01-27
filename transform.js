@@ -49,8 +49,8 @@ const mongo2sf_project_map = {
 	},
 
 	"primary_customer_contact" : {
-		"name" : "Primary_Customer_Contact__c.Name",
-		"email" : "Primary_Customer_Contact__c.Email",
+		"name" : "Primary_Customer_Contact__r.Name",
+		"email" : "Primary_Customer_Contact__r.Email",
 	},
 
 	"notes" : "pse__Notes__c",
