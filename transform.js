@@ -137,7 +137,7 @@ const mongo2sf_opportunity_map = {
     		"code" : "ProductCode",
     		"family" : "Product_Family__c",
     		"subfamily" : "Product_Sub_Family__c",
-    		"tag" : "Product_Summary_Tag__c",
+//    		"tag" : "Product_Summary_Tag__c", //field is broken on some records in SF
     	},
     	"qty" : "Quantity",
     	"total" : "convertCurrency(TotalPrice)",
