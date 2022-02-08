@@ -26,7 +26,7 @@ const mongo2sf_project_map = {
 		"_id" : "pse__Opportunity__r.Id",
 		"geo_region": "pse__Opportunity__r.Account.Geo_Region__c",
     	"owner_region" : "pse__Opportunity__r.Account.Owner.Region__c",
-    	"ps_notes" : "pse__Opportunity__r.PS_Notes__c"
+//    	"ps_notes" : "pse__Opportunity__r.PS_Notes__c"
 	},
 	
 	"summary" : {
