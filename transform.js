@@ -121,7 +121,6 @@ const mongo2sf_opportunity_map = {
 	"_id": "Id",
 	"name" : "Name",
 	"owner_region" : "Owner_Region__c",
-//	"owner_region2" : "Owner.Region__c",
 	"type" : "Type",
 	"owner" : "Owner.Name",
     "stage" : "StageName",
@@ -155,9 +154,9 @@ const mongo2sf_opportunity_map = {
     "em" : {
     	"engagement_manager" : "Eng_Manager__r.Name",
     	"ps_status" : "PS_Status__c",
-    	"esd_created" : "ESD_Created__c",
-    	"call" : "Engagement_Manager_Call__c",
-    	"call_amount" : "Value__c"
+    	// "esd_created" : "ESD_Created__c",
+    	// "call" : "Engagement_Manager_Call__c",
+    	// "call_amount" : "Value__c"
     },
 
     "services_post_carve" : "convertCurrency(Services_post_carve__c)",
@@ -170,7 +169,7 @@ const mongo2sf_opportunity_map = {
     	"amount_services_RD" : "In_Forecast_Amount_Services_RD__c"
     },
 
-    "ps_notes" : "PS_Notes__c",
+//    "ps_notes" : "PS_Notes__c",
     "ps_region" : "pse__Region__r.Name",
 
 	"SystemModstamp" : "SystemModstamp"
