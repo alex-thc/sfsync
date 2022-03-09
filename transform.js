@@ -288,10 +288,8 @@ function opportunity_posttransform(doc) {
 	if (ps_needed || em_needed)
 		doc.ps_triage = {ps_needed, em_needed};
 
-	//hack to make sure the EM subdoc is present until we get this resolved
-	if(!doc.em) {
-		doc.em = {engagement_manager:"-blank-"}
-	}
+	//hack to make sure the EM subdoc is present until we get this resolved	
+	doc.em = {engagement_manager:"-blank-"}
 	return doc;
 }
 
