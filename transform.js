@@ -290,7 +290,7 @@ function opportunity_posttransform(doc) {
 
 	//hack to make sure the EM subdoc is present until we get this resolved
 	if(!doc.em) {
-		doc.em = {engagement_manager:null}
+		doc.em = {engagement_manager:"-blank-"}
 	}
 	return doc;
 }
